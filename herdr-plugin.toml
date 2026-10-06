@@ -1,0 +1,20 @@
+id = "jorgeraad.repeat"
+name = "Repeat"
+version = "0.1.0"
+min_herdr_version = "0.9.1"
+description = "tmux-style repeatable keys: keep pressing h/j/k/l, n/p and friends after one prefix"
+platforms = ["linux", "macos"]
+
+[[actions]]
+id = "start"
+title = "Repeat mode"
+contexts = ["pane"]
+command = ["sh", "repeat.sh", "start"]
+
+[[panes]]
+id = "repeat"
+title = "repeat"
+placement = "popup"
+width = 16
+height = 3
+command = ["sh", "repeat.sh"]
