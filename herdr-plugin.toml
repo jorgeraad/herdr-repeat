@@ -13,7 +13,7 @@ command = ["sh", "repeat.sh", "start"]
 
 [[panes]]
 id = "repeat"
-title = ""
+title = "·"
 placement = "popup"
 width = 6
 height = 4

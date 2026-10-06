@@ -9,7 +9,6 @@ if [ "${1-}" = start ]; then
   done
   exit 1
 fi
-pane=$REPEAT_PANE tab=$REPEAT_TAB workspace=$REPEAT_WORKSPACE
 
 config() {
   cat <<'CONF'
@@ -87,6 +86,13 @@ handle() {
     *) [ "$1" = Escape ] || [ -z "$2" ] || "$herdr" pane send-text "$pane" "$2" >/dev/null; return 1 ;;
   esac
 }
+
+pane=$REPEAT_PANE tab=${REPEAT_TAB-} workspace=${REPEAT_WORKSPACE-}
+if [ -z "$tab" ] || [ -z "$workspace" ]; then
+  info=$("$herdr" pane get "$pane")
+  tab=$(printf %s "$info" | field tab_id) workspace=$(printf %s "$info" | field workspace_id)
+fi
+REPEAT_TAB=$tab
 
 ms=$(lookup repeat-time)
 stty -icanon -echo -icrnl min 0 time $(( (ms + 99) / 100 )) 2>/dev/null
