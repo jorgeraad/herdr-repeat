@@ -41,3 +41,7 @@ expect "$(keys '\017' { l)" "pane swap --direction up --pane w1:p1
 pane send-text w1:p1 {" "user config adds C-o, unbound key passes through and exits"
 
 expect "$(keys '\033' l)" "" "Escape exits without passthrough"
+
+expect "$(REPEAT_KEY=h keys j x)" "pane focus --direction left --pane w1:p1
+pane focus --direction down --pane w1:p2
+pane resize --direction right --pane w1:p2" "prefix key runs first, then keeps repeating"

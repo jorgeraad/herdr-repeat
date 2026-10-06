@@ -78,15 +78,19 @@ run() {
   esac && [ -n "$pane" ]
 }
 
+handle() {
+  binding=$(lookup "$1")
+  case $binding in
+    -r\ *) run "${binding#-r }" || return
+      [ "$tab" = "$REPEAT_TAB" ] || { "$herdr" plugin action invoke "$HERDR_PLUGIN_ID.start" >/dev/null; return 1; } ;;
+    ?*) run "$binding"; return 1 ;;
+    *) [ "$1" = Escape ] || [ -z "$2" ] || "$herdr" pane send-text "$pane" "$2" >/dev/null; return 1 ;;
+  esac
+}
+
 ms=$(lookup repeat-time)
 stty -icanon -echo -icrnl min 0 time $(( (ms + 99) / 100 )) 2>/dev/null
+[ -z "${REPEAT_KEY-}" ] || handle "$REPEAT_KEY" "" || exit 0
 while raw=$(dd bs=8 count=1 2>/dev/null; echo .) && raw=${raw%.} && [ -n "$raw" ]; do
-  key=$(keyname "$raw")
-  binding=$(lookup "$key")
-  case $binding in
-    -r\ *) run "${binding#-r }" || break
-      [ "$tab" = "$REPEAT_TAB" ] || { "$herdr" plugin action invoke "$HERDR_PLUGIN_ID.start" >/dev/null; break; } ;;
-    ?*) run "$binding"; break ;;
-    *) [ "$key" = Escape ] || "$herdr" pane send-text "$pane" "$raw" >/dev/null; break ;;
-  esac
+  handle "$(keyname "$raw")" "$raw" || break
 done

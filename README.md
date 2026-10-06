@@ -32,6 +32,26 @@ command = "jorgeraad.repeat.start"
 description = "repeat mode"
 ```
 
+To match tmux exactly, so that `prefix+n` moves right away and then keeps repeating, bind each key to a
+shell command that opens the popup with that key as the first press:
+
+```sh
+#!/bin/sh
+# repeat.sh KEY
+herdr plugin pane open --plugin jorgeraad.repeat --entrypoint repeat --env REPEAT_KEY="$1" \
+  --env REPEAT_PANE="$HERDR_ACTIVE_PANE_ID" --env REPEAT_TAB="$HERDR_ACTIVE_TAB_ID" \
+  --env REPEAT_WORKSPACE="$HERDR_ACTIVE_WORKSPACE_ID"
+```
+
+```toml
+focus_pane_left = ""  # free prefix+h for the repeatable version
+
+[[keys.command]]
+key = "prefix+h"
+type = "shell"
+command = "~/.config/herdr/repeat.sh h"
+```
+
 Requires Herdr 0.9.1 or newer on Linux or macOS. Only `sh` and coreutils are used.
 
 ## Configure
